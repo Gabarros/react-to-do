@@ -1,16 +1,21 @@
 import React from 'react';
 import { Component } from 'react';
-import logo from './logo.svg';
+import { BrowserRouter as Router, Route, Link } from 'react-router-dom';
+
 import "bootstrap/dist/css/bootstrap.min.css"
 import './App.css';
 
-class App extends Component{
+class App extends Component {
 
-  render(){
-    return(
-      <div className="container">
-        <h2>MERN STACK</h2>
-      </div>
+  render() {
+    return (
+
+      <Router>
+        <Route path="/" exact component={TodosList}/>
+        <Route path="/edit/:id" exact component={EditList}/>
+        <Route path="/create" exact component={CreateTodo}/>
+      </Router>
+
     );
   }
 }
