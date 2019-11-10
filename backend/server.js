@@ -22,7 +22,8 @@ connection.once('open', function(){
 });
 
 todoRoutes.get('/', (req, res)=>{
-    console.log("Acessado")
+    console.log("Acessado");
+    
     Todo.find((err, todos)=>{
         if(err){
             console.log(err);
