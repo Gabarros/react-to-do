@@ -3,25 +3,26 @@ const app = express();
 const bodyParser = require('body-parser');
 const cors = require('cors');
 const mongoose = require('mongoose');
-const PORT = 4000;
 const todoRoutes = express.Router();
+const PORT = 4000;
+
+// Import do Schema do DB
+let Todo = require('./todo.model');
 
 app.use(cors());
-app.use(bodyParser.json);
-app.use('/todos', todoRoutes);
+app.use(bodyParser.json());
 
-mongoose.connect('mongodb+srv://desenvolvedor:desenvolvimento123@cluster0-gedzb.mongodb.net/test?retryWrites=true&w=majority', {useNewUrlParser: true});
+
+// Conectando ao DB
+mongoose.connect('mongodb+srv://desenvolvedor:desenvolvimento123@cluster0-gedzb.mongodb.net/todoapp?retryWrites=true&w=majority', {useNewUrlParser: true, useUnifiedTopology: true});
 const connection = mongoose.connection;
 
 connection.once('open', function(){
     console.log("MongoDB Conexão estabelecida");
 });
 
-app.listen(PORT, function(){
-    console.log("Servidor rodando na Porta:" + PORT);
-});
-
 todoRoutes.get('/', (req, res)=>{
+    console.log("Acessado")
     Todo.find((err, todos)=>{
         if(err){
             console.log(err);
@@ -30,6 +31,7 @@ todoRoutes.get('/', (req, res)=>{
     });
 
 });
+
 
 todoRoutes.get('/:id', (req, res)=>{
     let id = req.params.id;
@@ -63,15 +65,26 @@ todoRoutes.post('/update/:id', (req, res)=>{
             todo.todo_completed = req.body.todo_completed;
 
             todo.save().then(todo=>{
+
                 res.json('Todo updated!');
+
             }).catch(err=>{
+
                 res.status(400).send('Update not possible');
+
             });
         };
     });
 });
+app.use('/todos', todoRoutes);
+
+// Conexão com o servidor sendo estabelecida
+app.listen(PORT, function(){
+    console.log("Servidor rodando na Porta:" + PORT);
+});
 
 // todoRoutes.route('/').get(function(req, res){
+//     console.log("Acessdo")
 //     Todo.find(function(err, todos){
 //         if(err){
 //             console.log(err);
