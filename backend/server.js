@@ -23,7 +23,7 @@ connection.once('open', function(){
 
 todoRoutes.get('/', (req, res)=>{
     console.log("Acessado");
-    
+
     Todo.find((err, todos)=>{
         if(err){
             console.log(err);
@@ -77,6 +77,47 @@ todoRoutes.post('/update/:id', (req, res)=>{
         };
     });
 });
+
+todoRoutes.delete('/delete/:id', (req, res)=>{
+
+    let id = req.params.id;
+
+    Todo.findById(id, function(err, todo){
+        if(!todo){
+            res.status(404).send("Not found");
+        }else{
+            todo.remove().then(todo=>{
+
+                res.json("deleted");
+
+            }).catch(err=>{
+                res.status(400).send("Not found");
+            })
+
+        }
+
+    });
+
+    Todo.findByIdAndRemove({ id }, function(err){
+       
+    });
+
+    // Todo.deleteOne(req.params.id, function(err, todo){
+
+    //     if(!todo){
+    //         res.status(404).send("Not found id");
+
+    //     }else{
+    //         todo.remove().then(todo=>{
+
+    //             res.json("Todo deleted");
+
+    //         }).catch(err=>{
+    //             res.status(400).send("Delete not possible!");
+    //         })
+    //     }
+    // });
+})
 app.use('/todos', todoRoutes);
 
 // Conexão com o servidor sendo estabelecida
@@ -84,13 +125,3 @@ app.listen(PORT, function(){
     console.log("Servidor rodando na Porta:" + PORT);
 });
 
-// todoRoutes.route('/').get(function(req, res){
-//     console.log("Acessdo")
-//     Todo.find(function(err, todos){
-//         if(err){
-//             console.log(err);
-//         }else{
-//             res.json(todos);
-//         }
-//     })
-// })
